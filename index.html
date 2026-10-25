@@ -85,7 +85,7 @@ function panel(title,meta,feast,raw,laudesRaw){
     return `${starts?'• ':''}${base}`;
   };
   const wantsAuxilio=title==='Laudes'||title==='Oficio de lecturas';
-  let auxilioPlaced=false,auxilioMarked=false,seenLines=0,droppingAuxilio=false,psalm94Placed=false,inPsalm94Section=false,skippingPsalm94=false;
+  let auxilioPlaced=false,auxilioMarked=false,seenLines=0,droppingAuxilio=false,psalm94Placed=false,inPsalm94Section=false,skippingPsalm94=false,shownAntiphon='',skipDupAntiphonLatin=false;
   const AUX='\u0000AUX\u0000';
   const normLine=value=>String(value??'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
   const isOs=value=>{const n=normLine(value);if(!n||/sanguin|libera me|exsultabit lingua|exsultabit\.?$/.test(n)||!/et os meum annuntiabit laudem tuam/.test(n))return false;const core=n.replace(/[℣℟]/g,'').replace(/\b[vr]\.\s*/g,'').replace(/ant\.\s*\*?\s*/g,'').replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim();return core==='et os meum annuntiabit laudem tuam'||core.startsWith('et os meum annuntiabit laudem tuam')||core.startsWith('domine labia mea aperies et os meum annuntiabit laudem tuam')};
@@ -118,6 +118,8 @@ function panel(title,meta,feast,raw,laudesRaw){
     if(auxilioPlaced&&seenLines<=28&&isAuxilioDialogue(text))continue;
     if(skippingPsalm94){if(kind!=='#')continue;skippingPsalm94=false}
     if(title==='Oficio de lecturas'&&inPsalm94Section&&!psalm94Placed&&(bare(text).includes('venite exsultemus')||bare(text).includes('venid aclamemos'))){flush();previousE='';html+=psalm94Block();skippingPsalm94=true;continue}
+    if(skipDupAntiphonLatin){skipDupAntiphonLatin=false;if(kind==='L')continue}
+    if(title==='Oficio de lecturas'&&kind==='A'&&/^invitatorio$/i.test(sectionTitle||'')&&shownAntiphon&&bare(text)===shownAntiphon){skipDupAntiphonLatin=true;continue}
     if(kind==='R'&&bare(text)==='o bien'){
       const stanzas=[];
       while(index+1<sourceLines.length&&sourceLines[index+1].split('|')[0]==='L'){index++;seenLines++;stanzas.push(sourceLines[index].split('|').slice(1).join('|'))}
@@ -130,7 +132,21 @@ function panel(title,meta,feast,raw,laudesRaw){
     if(kind==='N'){flush();previousE='';html+=`<p class="note">${br(text)}</p>`;continue}
     if(kind==='R'&&bare(text)==='salmo como en laudes'){flush();previousE='';html+=psalm94Block();continue}
     if(kind==='R'){flush();previousE='';html+=`<div class="verse"><p class="rubric">${labels(text)}</p></div>`;continue}
-    if(kind==='E'||kind==='A'){flush();const shown=kind==='E'?text.replace(/^<strong>V\d+[a-z]?\.<\/strong>\s*/i,''):text;pending={text:paragraphText(shown,kind),ant:kind==='A'};continue}
+    if(kind==='E'||kind==='A'){flush();if(kind==='A')shownAntiphon=bare(text);const shown=kind==='E'?text.replace(/^<strong>V\d+[a-z]?\.<\/strong>\s*/i,''):text;pending={text:paragraphText(shown,kind),ant:kind==='A'};continue}
+    if(kind==='L'&&!pending&&/^invocaci/i.test(sectionTitle||'')&&seenLines<=8){
+      const n=bare(text);
+      let pairs=null;
+      if(n.startsWith('deus in adiutorium')&&n.includes('domine ad adiuvandum')){
+        const parts=text.split(' / ');
+        if(parts.length>=2)pairs=[['Dios mío, ven en mi auxilio.',parts[0]],['Señor, date prisa en socorrerme.',parts.slice(1).join(' / ')]];
+      }else if(n.startsWith('gloria patri')&&n.includes('sicut erat')&&n.includes('allelu')){
+        pairs=[['Gloria al Padre, y al Hijo, y al Espíritu Santo. / Como era en el principio, ahora y siempre, por los siglos de los siglos. Amén. Aleluya.',text]];
+      }
+      if(pairs){
+        for(const [es,la] of pairs)html+=`<div class="verse"><p class="es">${labels(paragraphText(es,'E'))}</p><p class="la">${br(la)}</p></div>`;
+        continue;
+      }
+    }
     if(kind==='L'||kind==='G'){
       if(!pending){pending={text:'',ant:false}}
       const es=pending.text;
