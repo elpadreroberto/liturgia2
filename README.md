@@ -2,6 +2,6 @@
 
 Página pública: https://elpadreroberto.github.io/liturgia2/
 
-`index.html` reúne Laudes, Vísperas y Oficio de octubre y noviembre de 2026, hasta el día 30, y la Misa de octubre a diciembre. El botón de las líneas alterna el español, el latín y, en el Nuevo Testamento, el griego: uno bajo el otro, en columnas enfrentadas con una raya entre los textos en cualquier pantalla, y también el español junto al griego donde hay griego. Bajo cada evangelio está la Catena Aurea de Santo Tomás de Aquino.
+`index.html` reúne Laudes, Vísperas y Oficio de octubre y noviembre de 2026, hasta el día 30, y la Misa de octubre a diciembre. El botón de las líneas alterna el español, el latín y, en el Nuevo Testamento, el griego: uno bajo el otro, en columnas enfrentadas con una raya entre los textos en cualquier pantalla, y también el español junto al griego donde hay griego. Al abrir «Himno latino», la traducción española queda debajo del latín y sigue ese mismo botón. En Otros hay pestañas de Consagración, Sagrado Corazón, San José, Via crucis y Vía Matris. Bajo cada evangelio está la Catena Aurea de Santo Tomás de Aquino.
 
 `catena-aurea.json` guarda la fecha, la cita bíblica y esos comentarios.
