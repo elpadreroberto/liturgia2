@@ -1,4 +1,4 @@
-const CACHE='liturgia2-v6';
+const CACHE='liturgia2-v7';
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(['./','./index.html','./app.js'])));
   self.skipWaiting();
