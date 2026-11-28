@@ -12,6 +12,7 @@ Laudes, Vísperas y Oficio van de noviembre a diciembre de 2026. Diciembre dice 
 - `data/misa/2026-11.json`: lecturas de la Misa de ese mes, también las misas de más (Acción de Gracias, Navidad).
 - `data/catena/2026-11-13.json`: la Catena Aurea de esa misa.
 - `data/shared/`: himnos, criterios, oraciones de la misa, prefacios y plegarias, preces, Rosario y Completas. Cada bloque se descarga la primera vez que hace falta.
+- `data/shared/misa-latina.json`: latín de las oraciones, prefacios, plegarias y acción de gracias, del 26 de octubre al 31 de diciembre de 2026. El botón de las líneas lo muestra junto al español, solo, o lo oculta, igual que en Laudes y Vísperas. Las lecturas, las preces y la oración de los fieles siguen en español.
 
 Octubre de 2026 sigue en `data/office`, `data/misa` y `data/catena`. El calendario de la página empieza en noviembre, igual que antes.
 
